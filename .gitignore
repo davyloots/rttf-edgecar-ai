@@ -3,3 +3,4 @@
 /models/*.png
 .idea
 *.pyc
+bin/

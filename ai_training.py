@@ -450,6 +450,9 @@ def collate_records(records, gen_records, opts):
         angle = float(json_data['user/angle'])
         throttle = float(json_data["user/throttle"])
 
+        if angle < -0.55 or angle > 0.55 or throttle > -0.1 or throttle < -0.35:
+            continue
+
         # TODO: Nicky
         if opts['categorical']:
             angle = linear_bin(angle)

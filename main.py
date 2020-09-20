@@ -16,7 +16,7 @@ class MainClass():
         print("[MainClass] Processing folders")
         dirs = self.generate_folder_list('./data')
         print('[MainClass] Found current folders : {}'.format(dirs))
-        model_name = self.training_class.start_training(self.cfg, dirs, model_name=None, aug=self.cfg.AUGMENT)
+        model_name = self.training_class.start_training(self.cfg, dirs, model_name=None, model_type='linear', aug=self.cfg.AUGMENT)
         print("[MainClass] Finished training model {}".format(model_name))
 
     def generate_folder_list(self, folder_name):

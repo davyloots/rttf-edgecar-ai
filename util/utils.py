@@ -1,4 +1,5 @@
 import os
+import cv2
 
 from Tub import Tub
 from kerasai import KerasLinear
@@ -102,16 +103,39 @@ def get_record_index(fnm):
     return int(sl[1].split('.')[0])
 
 
+def ConvertToUseful(img):
+    hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+    hsv[:, :, 0] = (hsv[:, :, 0] + 50) % 179
+
+    target = np.uint8([[[255, 0, 0]]])
+    targethsv = cv2.cvtColor(target, cv2.COLOR_RGB2HSV)
+    targeth = (targethsv[0][0][0] + 50) % 179
+    # print(targeth, targethsv)
+    lower = np.array([targeth-10, 120, 25])
+    upper = np.array([targeth+10, 255, 225])
+    mask = cv2.inRange(hsv, lower, upper)
+    mask3 = np.zeros_like(img)
+    for i in range(3):
+        mask3[:, :, i] = mask[:, :]
+
+    return mask3
+
+
 def load_scaled_image_arr(filename, cfg):
     '''
     load an image from the filename, and use the cfg to resize if needed
     also apply cropping and normalize
     '''
     try:
-        img = Image.open(filename)
-        if img.height != cfg.IMAGE_H or img.width != cfg.IMAGE_W:
-            img = img.resize((cfg.IMAGE_W, cfg.IMAGE_H))
-        img_arr = np.array(img)
+#        img = Image.open(filename)
+#        if img.height != cfg.IMAGE_H or img.width != cfg.IMAGE_W:
+#            img = img.resize((cfg.IMAGE_W, cfg.IMAGE_H))
+#        img = ConvertToUseful(img)
+        cv_image = cv2.imread(filename)
+        cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
+        cv_image = cv2.resize(cv_image, (160, 120))
+        cv_image = ConvertToUseful(cv_image)
+        img_arr = np.array(cv_image)
         img_arr = normalize_and_crop(img_arr, cfg)
         croppedImgH = img_arr.shape[0]
         croppedImgW = img_arr.shape[1]

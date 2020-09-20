@@ -116,6 +116,7 @@ if __name__ == '__main__':
 
                 draw_curve(cv_image, data["user/throttle"], data["user/angle"], (0, 255, 0))
                 draw_curve(cv_image, throttle, steering, (0, 255, 255))
+                plt.cla()
                 plt.imshow(cv_image)
                 plt.show(block=False)
                 plt.pause(0.001)
